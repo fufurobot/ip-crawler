@@ -28,7 +28,7 @@ from __future__ import annotations
 
 import abc
 from dataclasses import dataclass, field
-from typing import Iterable, Tuple
+from typing import Iterable, Mapping, Tuple
 from urllib.parse import urlsplit
 
 __all__ = [
@@ -98,12 +98,17 @@ class Character:
     ``aliases`` is normalised on construction: stripped, de-duplicated and
     sorted, so two characters built from the same messy wiki data compare
     equal.
+
+    ``attributes`` holds the raw key/value pairs recovered from the character's
+    wiki page (class, rarity, faction, ...).  It is kept as a frozen
+    ``tuple``-backed mapping so a character stays hashable.
     """
 
     name: str
     aliases: Tuple[str, ...] = ()
     world_name: str | None = None
     location_name: str | None = None
+    attributes: Tuple[Tuple[str, str], ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "name", _require_text(self.name, "name"))
@@ -112,6 +117,23 @@ class Character:
             value = getattr(self, attr)
             if value is not None:
                 object.__setattr__(self, attr, _require_text(value, attr))
+        object.__setattr__(self, "attributes", _normalise_attributes(self.attributes))
+
+    def attribute(self, key: str) -> str | None:
+        """The value recorded for *key*, or ``None``."""
+        return dict(self.attributes).get(key)
+
+
+def _normalise_attributes(
+    attributes: Iterable[tuple[str, str]] | Mapping[str, str],
+) -> Tuple[Tuple[str, str], ...]:
+    items = attributes.items() if isinstance(attributes, Mapping) else attributes
+    normalised: dict[str, str] = {}
+    for key, value in items:
+        normalised[_require_text(key, "attribute key")] = _require_text(
+            value, "attribute value"
+        )
+    return tuple(normalised.items())
 
 
 def _normalise_aliases(aliases: Iterable[str]) -> Tuple[str, ...]:

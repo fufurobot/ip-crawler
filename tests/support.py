@@ -7,7 +7,17 @@ import os
 import pathlib
 import shutil
 
-__all__ = ["workspace_tmp", "temp_dir"]
+__all__ = ["workspace_tmp", "temp_dir", "data_root", "project_root"]
+
+
+def project_root() -> pathlib.Path:
+    """The repository root (the directory holding ``pyproject.toml``)."""
+    return pathlib.Path(__file__).resolve().parent.parent
+
+
+def data_root() -> pathlib.Path:
+    """The plan's ``./data`` directory, holding one folder per game."""
+    return pathlib.Path(os.environ.get("IPCRAWLER_DATA_ROOT", project_root() / "data"))
 
 _counter = itertools.count()
 

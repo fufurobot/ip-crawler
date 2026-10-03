@@ -7,11 +7,12 @@ local files so the analysis stages can serve and drive them offline.
 from __future__ import annotations
 
 import pathlib
-import tempfile
 import unittest
 
 from ipcrawler.analysis.mirror import MirrorResult, WikiMirror
 from ipcrawler.domain import Source
+
+from .support import workspace_tmp
 
 
 class FakeCrawler:
@@ -34,9 +35,7 @@ class FakeCrawler:
 
 class WikiMirrorTest(unittest.TestCase):
     def setUp(self) -> None:
-        self.tmp = tempfile.TemporaryDirectory()
-        self.addCleanup(self.tmp.cleanup)
-        self.root = pathlib.Path(self.tmp.name)
+        self.root = workspace_tmp()
 
     def test_mirrors_root_page_to_index_html(self) -> None:
         crawler = FakeCrawler({"https://wiki.test/": "<html>root</html>"})

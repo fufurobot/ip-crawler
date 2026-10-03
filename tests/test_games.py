@@ -65,10 +65,16 @@ class GameSpecTest(unittest.TestCase):
 
 class CatalogTest(unittest.TestCase):
     def test_catalog_covers_every_directory_under_data(self) -> None:
-        # ./data is the plan's source of truth for "which games exist".
+        # ./data is the plan's source of truth for "which games exist", but it is
+        # gitignored (mirrors are large), so a clean checkout has no ./data at
+        # all.  In that case there is nothing to reconcile.
         from .support import data_root
 
-        on_disk = {p.name for p in data_root().iterdir() if p.is_dir()}
+        root = data_root()
+        if not root.is_dir():
+            self.skipTest(f"no local data directory at {root}")
+
+        on_disk = {p.name for p in root.iterdir() if p.is_dir()}
         on_disk.discard(".ipynb_checkpoints")
         catalogued = {spec.slug for spec in GAME_SPECS}
         # Every real data directory must be represented...

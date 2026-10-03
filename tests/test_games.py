@@ -125,7 +125,8 @@ class BuildIPTest(unittest.TestCase):
         }
         ip = build_ip(spec, pages)
         amiya = next(c for c in ip.characters if c.name == "Amiya")
-        self.assertEqual(amiya.attributes["Class"], "Caster")
+        self.assertEqual(amiya.attribute("Class"), "Caster")
+        self.assertEqual(dict(amiya.attributes)["Class"], "Caster")
 
     def test_non_character_pages_are_ignored(self) -> None:
         spec = get_spec("arknights")

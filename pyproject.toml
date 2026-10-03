@@ -1,0 +1,35 @@
+[project]
+name = "ipcrawler"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "fufu", email = "fufurobot@outlook.com" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "playwright>=1.63.0",
+    "pyautogui>=0.9.54",
+    "python3-wget>=0.0.2b1",
+    "scrapy>=2.19.0",
+]
+
+[project.scripts]
+ip-crawler = "ipcrawler.cli:main"
+
+[dependency-groups]
+dev = []
+
+[build-system]
+requires = ["uv_build>=0.12.14,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "src"
+
+[tool.ipcrawler]
+# Root that holds one directory per game/wiki (layer 3 discovery input).
+data-root = "data"
+# A single sqlite file holds every layer's records.
+database = "ipcrawler.sqlite3"
+

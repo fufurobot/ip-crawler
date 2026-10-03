@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+data
+uv.lock
+
+# Local uv cache (redirected into the workspace for sandboxed runs)
+.uv-cache/
+
+# Test scratch space and generated databases
+.tmp/
+*.sqlite3

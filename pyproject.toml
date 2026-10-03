@@ -15,8 +15,21 @@ dependencies = [
 ]
 
 [project.scripts]
-ip-crawler = "ipcrawler.crawler.entrypoint:main"
+ip-crawler = "ipcrawler.cli:main"
+
+[dependency-groups]
+dev = []
 
 [build-system]
 requires = ["uv_build>=0.12.14,<0.13.0"]
 build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-root = "src"
+
+[tool.ipcrawler]
+# Root that holds one directory per game/wiki (layer 3 discovery input).
+data-root = "data"
+# A single sqlite file holds every layer's records.
+database = "ipcrawler.sqlite3"
+

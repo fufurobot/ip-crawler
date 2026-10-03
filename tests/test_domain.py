@@ -81,7 +81,9 @@ class WorldTest(unittest.TestCase):
     def test_locations_are_read_only_from_outside(self) -> None:
         terra = World(name="Terra")
         terra.add_location(Location(name="Rhodes Island"))
-        with self.assertRaises(TypeError):
+        # ``locations`` is a tuple: no in-place mutation is possible.
+        self.assertIsInstance(terra.locations, tuple)
+        with self.assertRaises(AttributeError):
             terra.locations.append(Location(name="Nope"))  # type: ignore[attr-defined]
 
 
@@ -119,7 +121,9 @@ class IPTest(unittest.TestCase):
 
     def test_worlds_and_characters_are_read_only_from_outside(self) -> None:
         arknights = IP(name="Arknights")
-        with self.assertRaises(TypeError):
+        self.assertIsInstance(arknights.worlds, tuple)
+        self.assertIsInstance(arknights.characters, tuple)
+        with self.assertRaises(AttributeError):
             arknights.worlds.append(World(name="Nope"))  # type: ignore[attr-defined]
 
 
